@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+<body>
+<style>
+#demo{
+  outline: none;
+}
+</style>
+<div id="bg" style='width:400px; height:400px; background:red; position:absolute;left:0px; top:0px;'></div>
+<div id="demo" style='width:100px; height:100px; border:none; position:absolute;left:100px; top:100px;' contenteditable=true></div>
+
+</body>
+</html>
+<script>
+var demo = $("body");
+console.log(demo);
+
+demo.keydown(function(e){
+ console.info(e.keyCode);
+});
+
+
+</script>
+
+
