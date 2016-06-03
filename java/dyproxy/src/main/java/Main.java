@@ -12,17 +12,6 @@ class Foo implements IFoo{
     }
 }
 
-abstract class IBar{
-    public abstract void test();
-    public void test2(){}
-}
-
-class Bar extends IBar{
-    public void test() {
-        System.out.println("bar");
-    }
-}
-
 class Handler implements InvocationHandler {
     private Foo foo;
 
