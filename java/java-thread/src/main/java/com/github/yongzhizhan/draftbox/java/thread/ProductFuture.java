@@ -1,3 +1,5 @@
+package com.github.yongzhizhan.draftbox.java.thread;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
