@@ -47,15 +47,19 @@ public class Depot<T> {
         return productFuture;
     }
 
-    public synchronized List<ProductFuture<T>> consume(int maxCount) {
+    public synchronized List<ProductFuture<T>> consume(int maxCount, boolean wait) {
         List<ProductFuture<T>> consumeList = new LinkedList<ProductFuture<T>>();
 
         if(true == stop)
             return consumeList;
 
         try {
-            if (productList.isEmpty())
-                wait();
+            if (productList.isEmpty()) {
+                if(true == wait)
+                    wait();
+
+                return consumeList;
+            }
 
             if(true == stop)
                 return consumeList;
@@ -73,5 +77,9 @@ public class Depot<T> {
         }
 
         return consumeList;
+    }
+
+    public synchronized List<ProductFuture<T>> consume(int maxCount) {
+        return consume(maxCount, true);
     }
 }
