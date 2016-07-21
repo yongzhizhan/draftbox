@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ValidationException;
 
 @ControllerAdvice
 @Component
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handle(Exception exception) {
+    public String handle(ValidationException exception) {
         System.out.println("bad request, " + exception.getMessage());
         return "bad request, " + exception.getMessage();
     }

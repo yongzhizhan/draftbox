@@ -32,7 +32,6 @@ public class IndexController {
     @ResponseStatus(HttpStatus.OK)
     public String validString(
             @RequestParam(value = "str", defaultValue = "")
-            @Valid
             @Size(min = 1, max = 3)
             String vStr){
 
