@@ -1,0 +1,6 @@
+**/\.idea
+**/\.svn
+**/AVXRestfulDemoV1
+**/target
+*.iml
+

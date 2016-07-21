@@ -6,5 +6,6 @@
 
 ## TODO:
 
-* 支持Future
+* 抽象ProductFuture,支持Future
 * 完善测试
+

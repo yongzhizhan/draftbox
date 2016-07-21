@@ -1,5 +1,5 @@
 /**
- * Created by wentian on 16/6/24.
+ * 定义bucket类型
  */
-public class BucketType {
-}
+
+enum BucketType{ROOM, ROW, RACK, DEVICE};
