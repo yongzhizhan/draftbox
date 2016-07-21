@@ -1,4 +1,4 @@
-package eu.kielczewski.example.initializer;
+package com.github.yongzhizhan.draftbox.initializer;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -18,7 +18,7 @@ public class EmbeddedJetty {
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedJetty.class);
     private static final int DEFAULT_PORT = 8080;
     private static final String CONTEXT_PATH = "/";
-    private static final String CONFIG_LOCATION = "eu.kielczewski.example.config";
+    private static final String CONFIG_LOCATION = "com.github.yongzhizhan.draftbox.config";
     private static final String MAPPING_URL = "/*";
     private static final String DEFAULT_PROFILE = "dev";
 

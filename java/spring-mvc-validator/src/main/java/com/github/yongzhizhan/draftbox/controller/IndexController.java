@@ -1,8 +1,11 @@
-package eu.kielczewski.example.controller;
+package com.github.yongzhizhan.draftbox.controller;
 
+import com.github.yongzhizhan.draftbox.model.Foo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +28,19 @@ public class IndexController {
     @ResponseBody
     public String showIndex() {
         return message;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "validObject", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public String validObject(
+            @RequestBody()
+            @Valid Foo vFoo, BindingResult vBindingResult){
+
+        if(vBindingResult.hasErrors())
+            vBindingResult.reject("error", "test");
+
+        return "";
     }
 
     @ResponseBody

@@ -1,4 +1,4 @@
-package eu.kielczewski.example.controller;
+package com.github.yongzhizhan.draftbox.controller;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;

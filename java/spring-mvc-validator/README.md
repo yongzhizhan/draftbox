@@ -1,18 +1,13 @@
-Spring MVC Embedded Jetty Example
+Spring MVC参数验证使用
 =================================
 
-Basic Spring MVC 3.2.x application using embedded Jetty server
 
-Check out [kielczewski.eu/blog](http://kielczewski.eu/blog)!
-
-Requirements
+描述
 ------------
-* [Java Platform (JDK) 7](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [Apache Maven 3.x](http://maven.apache.org/)
+使用@Validated注解
 
-Quick start
+使用
 -----------
 1. `mvn package`
-2. `java -jar target/example-spring-jetty-1.0-SNAPSHOT.jar`
-3. Point your browser to [http://localhost:8080](http://localhost:8080)
-4. Point your browser to [http://localhost:8080/images/spring_logo.png](http://localhost:8080/images/spring_logo.png)
+2. `java -jar target/spring-mvc-validator-1.0-SNAPSHOT.jar`
+3. 在浏览器中访问 [http://localhost:8080/validString?str=test](http://localhost:8080/validString?str=test)，可以测试验证效果

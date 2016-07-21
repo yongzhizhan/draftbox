@@ -2,13 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.kielczewski.example.spring</groupId>
-    <artifactId>example-spring-jetty</artifactId>
+    <groupId>com.github.yongzhizhan.draftbox.spring</groupId>
+    <artifactId>spring-mvc-validator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
-    <name>Spring MVC Embedded Jetty Example</name>
-    <url>http://kielczewski.eu</url>
 
     <properties>
         <spring.version>4.2.6.RELEASE</spring.version>
@@ -119,7 +116,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>eu.kielczewski.example.initializer.EmbeddedJetty</mainClass>
+                                    <mainClass>com.github.yongzhizhan.draftbox.initializer.EmbeddedJetty</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
