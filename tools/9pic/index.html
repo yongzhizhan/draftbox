@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  	<title>9图切割</title>
+
+  	<script type="text/javascript" src="http://oev1ogkg0.bkt.clouddn.com/16-10-23/55592235-jquery-3.1.1.min.js"></script>
+  	<script type="text/javascript" src="paste.js"></script>
+</head>
+
+<style>
+	.splitPic{
+		border: none;
+		margin: 1px;
+		padding: 0px;
+		float: left;
+	}
+
+	.split_target{
+		margin: 0px;
+		padding: 0px;
+	}
+</style>
+<body>
+朋友圈9图脚本，请将图片粘贴到网页中
+<canvas style="border:1px solid grey;display:none;" id="pastePic" width="300" height="300"></canvas>
+<img id="pic" src="img_the_scream.jpg" alt="pic" style="display:none;">
+<canvas id="canvas" style="display:none;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<div id="split_target" class="split_target"></div>
+
+<script>
+
+function splitPic(){
+	var pic = $("#pic");
+	var picWidth = pic.width();
+	var picHeight = pic.height();
+
+	var target = $("#split_target");
+	target.width(picWidth + 6);
+
+	var pieceWidht = Math.floor(picWidth / 3);
+	var pieceHeight = Math.floor(picHeight / 3);
+
+	var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.canvas.width = pieceWidht;
+    ctx.canvas.height = pieceHeight;
+
+	for(var i=1; i<=9; i++){
+		var xPos = Math.floor((i + 2) % 3) * pieceWidht;
+		var yPos = Math.floor((i - 1) / 3) * pieceHeight;
+
+		console.info("(" + xPos + "," + yPos + ")");
+
+		ctx.drawImage(pic.get(0), xPos, yPos, pieceWidht, pieceHeight, 0, 0, pieceWidht, pieceHeight);
+
+		var dataURL = canvas.toDataURL();
+		var test = $('<img class="splitPic">');
+		test.attr('src', dataURL);
+		test.height(pieceHeight);
+		test.width(pieceWidht);
+
+		test.appendTo(target);
+
+		//ctx.clearRect(0, 0, canvas.width, canvas.height);
+	}
+}
+
+$(document).ready(function(){
+	var CLIPBOARD = new CLIPBOARD_CLASS("pastePic", true, function(dataUrl){
+		$("#split_target").empty();
+		var pic = $("#pic");
+		pic.attr("src", dataUrl);
+		splitPic();	
+	});
+	
+});
+
+</script>
+
+</body>
+</html>

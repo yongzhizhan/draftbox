@@ -9,7 +9,7 @@ targetCompatibility = '1.7'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-group               = "co.paralleluniverse"
+group               = "com.atomview.net"
 version             = "0.1.0"
 status              = "integration"
 description         = "Java FileSystem as FUSE"
@@ -96,10 +96,10 @@ uploadArchives {
 
             repository(
                 url: (isReleaseVersion ?
-	                        "https://oss.sonatype.org/service/local/staging/deploy/maven2" :
-	                        "https://oss.sonatype.org/content/repositories/snapshots")) {
+	                        "http://maven.atomview.net:8081/content/repositories/Meii-Release/" :
+	                        "http://maven.atomview.net:8081/content/repositories/Meii-Snapshots/")) {
                 // User and Password are taken from ~/.gradle/gradle.properties
-                authentication(userName: project.sonatypeUsername, password: project.sonatypePassword)
+                authentication(userName: "Maven-Jenkins", password: "Izw309ywIn")
             }
             pom.project {
                 name project.name

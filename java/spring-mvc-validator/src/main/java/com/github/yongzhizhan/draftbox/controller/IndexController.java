@@ -1,6 +1,8 @@
 package com.github.yongzhizhan.draftbox.controller;
 
+import com.github.yongzhizhan.draftbox.model.Bar;
 import com.github.yongzhizhan.draftbox.model.Foo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -21,13 +23,17 @@ import javax.validation.constraints.Size;
 @Validated
 public class IndexController {
 
+    @Autowired
+    Bar bar;
+
     @Value("${example.message}")
     private String message;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public String showIndex() {
-        return message;
+        //return message;
+        return bar.validString("1231111111");
     }
 
     @ResponseBody

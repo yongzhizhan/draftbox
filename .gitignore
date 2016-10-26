@@ -3,4 +3,7 @@
 **/AVXRestfulDemoV1
 **/target
 *.iml
+*tmp
+*test
+*vnc
 

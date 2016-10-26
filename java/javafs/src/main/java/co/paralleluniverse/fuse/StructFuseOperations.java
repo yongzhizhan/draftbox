@@ -130,7 +130,8 @@ class StructFuseOperations extends Struct {
         create.set(filesystem);
         ftruncate.set(filesystem);
         fgetattr.set(filesystem);
-        lock.set(filesystem);
+        //Lock NotImplement, User System Default
+        //lock.set(filesystem);
         utimens.set(filesystem);
         bmap.set(filesystem);
         ioctl.set(filesystem);
