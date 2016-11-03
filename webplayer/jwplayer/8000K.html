@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<script type='text/javascript' src='swfobject.js'></script>
+
+<h1>压缩文件，压缩时指定码率为8000Kbps</h1>
+<h2>文件大小：62.8MB</h2>
+<h2>文件时长：00:01:08</h2>
+<h2>帧宽高：1920*1080</h2>
+<h2>平均帧率：7638kbps</h2>
+
+
+<div id='mediaspace'>This text will be replaced</div>
+
+<script type='text/javascript'>
+  var so = new SWFObject('player.swf','mpl','800','600','9');
+  so.addParam('allowfullscreen','true');
+  so.addParam('allowscriptaccess','always');
+  so.addParam('wmode','opaque');
+  so.addVariable('file','mov:8000K.mov');
+  so.addVariable('streamer','rtmp://192.168.20.60:1935/live/');
+  so.write('mediaspace');
+</script>
+</body>
+</html>

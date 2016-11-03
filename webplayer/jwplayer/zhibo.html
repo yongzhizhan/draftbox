@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<script type='text/javascript' src='swfobject.js'></script>
+
+<div id='mediaspace'>This text will be replaced</div>
+
+<script type='text/javascript'>
+  var so = new SWFObject('player.swf','mpl','800','600','9');
+  so.addParam('allowfullscreen','true');
+  so.addParam('allowscriptaccess','always');
+  so.addParam('wmode','opaque');
+  so.addVariable('streamer','rtsp://192.168.20.60:1935/live/livestream');
+  so.write('mediaspace');
+</script>
+</body>
+</html>

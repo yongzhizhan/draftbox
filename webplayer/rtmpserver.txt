@@ -1,0 +1,6 @@
+docker:
+	docker pull jstoja/plugandstream
+	/etc/service/crtmp/run
+
+
+注意修改配置文件为flvplayback.lua

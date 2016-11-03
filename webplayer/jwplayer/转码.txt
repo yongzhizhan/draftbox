@@ -1,0 +1,2 @@
+由于avi使用的是h264编码，可以仅仅转换容器的封装格式，这样就可以使用flash player进行播放
+	ffmpeg -i 123.avi -vcodec copy -acodec copy xxx.mp4
