@@ -4,6 +4,5 @@
 **/target
 *.iml
 *tmp
-*test
 *vnc
 
