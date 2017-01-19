@@ -16,6 +16,9 @@ class Shell:
 
         self.__process = subprocess.Popen(self.cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
+    def wait_for_terminate(self, timeoutS):
+        self.__process.wait(timeout=timeoutS)
+
     def get_output(self):
         if not self.is_terminate():
             return ""
