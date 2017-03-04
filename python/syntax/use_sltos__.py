@@ -23,7 +23,7 @@ class Foo(object):
 
 foo = Foo()
 foo.x = "foo"
-print foo.__dict__
+print(foo.__dict__)
 
 class Bar(object):
     __slots__ = ("test")
@@ -36,10 +36,10 @@ bar.test = "bar"
 
 #bar.x = "bar" invalid access
 
-print bar.test
+print(bar.test)
 
 try:
-    print bar.__dict__      # not contain __dict__variable
-except Exception, e:
-    print "bar.__dict__ can not access"
+    print(bar.__dict__)     # not contain __dict__variable
+except Exception as e:
+    print("bar.__dict__ can not access")
 
