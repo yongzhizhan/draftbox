@@ -24,17 +24,16 @@
             complete(200, 'OK', { text: xdr.responseText }, headers);
           };
           
+		  
           // Apply custom fields if provided
-					if ( s.xhrFields ) {
-            xhr.onerror = s.xhrFields.error;
-            xhr.ontimeout = s.xhrFields.timeout;
-					}
-
-          xdr.open( s.type, s.url );
-
-          // XDR has no method for setting headers O_o
-
-          xdr.send( ( s.hasContent && s.data ) || null );
+			if ( s.xhrFields ) {
+				xhr.onerror = s.xhrFields.error;
+				xhr.ontimeout = s.xhrFields.timeout;
+			}
+			
+		s.contentType = "text/plain";
+		xdr.open( s.type, s.url );
+		xdr.send( ( s.hasContent && s.data ) || null);
         },
 
         abort: function() {

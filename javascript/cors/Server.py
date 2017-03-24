@@ -27,7 +27,7 @@ def get():
     c = httplib.HTTPConnection("svn.atomview.net")
     # we need to base 64 encode it
     # and then decode it to acsii as python 3 stores it as a byte string
-    userAndPass = b64encode(b"zhanyongzhi:wentian123").decode("ascii")
+    userAndPass = b64encode(b"zhanyongzhi:00").decode("ascii")
     headers = {'Authorization': 'Basic %s' % userAndPass}
     # then connect
     c.request('GET', url, headers=headers)
