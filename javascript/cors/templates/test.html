@@ -1,0 +1,39 @@
+﻿<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>	
+	<script src="jquery.iecors.js"></script>
+</head>
+
+<body>
+	<div id="content" class="wikistyle" style="margin-top:15px;"></div>
+</body>
+	
+<script>
+var data = JSON.stringify({
+  "FileId": "string",
+  "Title": "string",
+  "FileName": "string",
+  "UploadUserName": "string",
+  "PubDate": "2012-12-12 12:12:12",
+  "IsExpire": true,
+  "CatalogId": 0,
+  "ValidDate": "string",
+  "PubDepId": 0,
+  "PubDepName": "string"
+});
+
+$.ajax({
+    method: "post",
+	data:data,
+	contentType: "application/json",
+    url: "http://10.10.17.46/gmdoc/adddoc",
+    success: function (data) {
+    	alert(JSON.stringify(data));		
+    }
+});
+
+</script>
+
+</html>

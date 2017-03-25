@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from bottle import route, run, response
+from bottle import route, run, response, request
 import json
 
 
-@route("/test")
+@route("/test", method="POST")
 def test():
+    headers = request.headers
     response.headers['Access-Control-Allow-Origin'] = '*'
     retJsonStr = json.dumps({"test": "val"})
 

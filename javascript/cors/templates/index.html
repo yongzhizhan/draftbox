@@ -1,0 +1,37 @@
+﻿<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>
+	<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+	<link rel="stylesheet" media="all" href="http://www.appinn.com/markdown/Han/han.min.css">
+    <link rel="stylesheet" media="all" href="http://www.appinn.com/markdown/stylesheets/main.css">
+
+	<script src="jquery.iecors.js"></script>
+</head>
+
+<body>
+	<div id="content" class="wikistyle" style="margin-top:15px;"></div>
+</body>
+	
+<script>
+    function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+		var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+		if (r != null) return unescape(r[2]); return null; //返回参数值
+	}
+
+$.ajax({
+    method: "get",
+    url: "/get?url=" + getUrlParam("url"),
+    success: function (data) {
+    	var converter = new showdown.Converter(),
+		html      = converter.makeHtml(data);
+
+		$("#content").html(html);
+    }
+});
+
+</script>
+
+</html>
