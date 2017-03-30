@@ -1,4 +1,4 @@
-package cn.zhanyongzhi.validationdata;
+package cn.zhanyongzhi.validationidea;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
