@@ -13,6 +13,7 @@
         <github.global.server>github</github.global.server>
         <github.global.username>yongzhizhan</github.global.username>
         <github.global.reponame>draftbox</github.global.reponame>
+        <netty-version>4.0.27.Final</netty-version>
     </properties>
 
     <distributionManagement>
@@ -86,6 +87,28 @@
 
 
     <dependencies>
+        <!-- Netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>${netty-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>${netty-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>${netty-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-version}</version>
+        </dependency>
         <!-- log4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
