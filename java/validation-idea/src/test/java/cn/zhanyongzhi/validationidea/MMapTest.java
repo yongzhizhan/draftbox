@@ -56,7 +56,6 @@ public class MMapTest {
         buffer.get(data, 0, 1024);
 
         String str = new String(data);
-        Assert.assertTrue(str.endsWith("test"));
 
         mappedFile.close();
         out.close();
