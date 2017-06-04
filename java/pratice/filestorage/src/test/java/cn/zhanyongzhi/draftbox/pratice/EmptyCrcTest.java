@@ -15,18 +15,4 @@ public class EmptyCrcTest {
         long val = crc32.getValue();
         Assert.assertNotNull(val);
     }
-
-    @Test
-    public void testChecksum(){
-        byte[] data = String.format("content_%d", 9).getBytes();
-        CRC32 crc32 = new CRC32();
-        crc32.update(data);
-
-        long checksum = crc32.getValue();
-
-        byte[] longByte = Functions.longToByteArray(checksum);
-        byte[] expectVal = {0, 0, 1, 0, 3, 63, -86, 1};
-
-        Assert.assertEquals(expectVal, longByte);
-    }
 }

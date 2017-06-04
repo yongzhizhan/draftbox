@@ -1,5 +1,7 @@
 package cn.zhanyongzhi.draftbox.pratice;
 
+import cn.zhanyongzhi.draftbox.pratice.exception.CanNotWriteMoreObjectException;
+import cn.zhanyongzhi.draftbox.pratice.exception.FileRemainSizeLessThanZeroException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,66 +28,69 @@ public class FileStorageTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testDefault() throws IllegalAccessException, InstantiationException, IOException {
-        FileStorage<Foo> fileStorage = new FileStorage(testFile, Foo.class);
+    public void testDefault() throws IllegalAccessException, InstantiationException, IOException, FileRemainSizeLessThanZeroException, CanNotWriteMoreObjectException {
+        FileStorage<StorageData> fileStorage = new FileStorage(testFile, StorageData.class);
 
-        Foo foo = new Foo();
-        foo.setData("123456".getBytes());
+        StorageData storageData = new StorageData();
+        storageData.setData("123456".getBytes());
 
-        fileStorage.append(foo);
+        Long key = fileStorage.append(storageData);
 
-        Foo readFoo = fileStorage.getObject(0);
+        StorageData readStorageData = fileStorage.getObject(key);
 
-        Assert.assertEquals(true, Arrays.equals(readFoo.getData(), foo.getData()));
+        Assert.assertEquals(true, Arrays.equals(readStorageData.getData(), storageData.getData()));
     }
 
     @SuppressWarnings({"Duplicates", "unchecked"})
     @Test
-    public void testRemoveBlock() throws IOException {
-        FileStorage<Foo> fileStorage = new FileStorage(testFile, Foo.class);
+    public void testRemoveBlock() throws IOException, FileRemainSizeLessThanZeroException, CanNotWriteMoreObjectException {
+        FileStorage<StorageData> fileStorage = new FileStorage(testFile, StorageData.class);
 
         int count = 10;
+        List<Long> keyList = new ArrayList(count);
 
         for(int i=0; i<count; i++) {
-            Foo foo = new Foo();
+            StorageData storageData = new StorageData();
             byte[] data = String.format("content_%d", i).getBytes();
-            foo.setData(data);
+            storageData.setData(data);
 
-            fileStorage.append(foo);
+            Long key = fileStorage.append(storageData);
+            keyList.add(key);
         }
 
         for(int i=0; i<count; i++){
-            fileStorage.delete(i);
+            Long key = keyList.get(i);
+            fileStorage.delete(key);
         }
 
-        Iterator<Foo> iterator = fileStorage.getIterator();
+        Iterator<StorageData> iterator = fileStorage.getIterator();
         while(iterator.hasNext()){
-            Foo foo = iterator.next();
-            Assert.assertTrue(foo.isDelete());
+            StorageData storageData = iterator.next();
+            Assert.assertTrue(storageData.isDelete());
         }
     }
 
     @SuppressWarnings("Duplicates")
     @Test
-    public void testCompact() throws IOException, InterruptedException {
-        FileStorage<Foo> fileStorage = new FileStorage(testFile, Foo.class);
+    public void testCompact() throws IOException, InterruptedException, FileRemainSizeLessThanZeroException, CanNotWriteMoreObjectException {
+        FileStorage<StorageData> fileStorage = new FileStorage(testFile, StorageData.class);
 
         int count = 10;
-        int curIndex = 0;
+        long curKey = 0;
 
-        List<Integer> indexList = new ArrayList(count);
+        List<Long> keyList = new ArrayList(count);
 
         for(int i=0; i<count; i++) {
-            Foo foo = new Foo();
+            StorageData storageData = new StorageData();
             byte[] data = String.format("content_%d", i).getBytes();
-            foo.setData(data);
+            storageData.setData(data);
 
-            curIndex = fileStorage.append(foo);
-            indexList.add(curIndex);
+            curKey = fileStorage.append(storageData);
+            keyList.add(curKey);
         }
 
         for(int i=0; i<count - 1; i++){
-            fileStorage.delete(indexList.get(i));
+            fileStorage.delete(keyList.get(i));
         }
 
         fileStorage.compact();
@@ -93,32 +98,32 @@ public class FileStorageTest {
         Thread.sleep(10 * 1000);
 
         int index = 0;
-        Iterator<Foo> iterator = fileStorage.getIterator();
+        Iterator<StorageData> iterator = fileStorage.getIterator();
         while(iterator.hasNext()){
             index++;
 
-            Foo foo = iterator.next();
-            Assert.assertFalse(foo.isDelete());
+            StorageData storageData = iterator.next();
+            Assert.assertFalse(storageData.isDelete());
         }
 
         Assert.assertTrue(1 == index);
     }
 
     @Test
-    public void testCheckSum() throws IOException, IllegalAccessException, InstantiationException {
-        FileStorage<Foo> fileStorage = new FileStorage(testFile, Foo.class);
-        int lastIndex = 0;
+    public void testCheckSum() throws IOException, IllegalAccessException, InstantiationException, FileRemainSizeLessThanZeroException, CanNotWriteMoreObjectException {
+        FileStorage<StorageData> fileStorage = new FileStorage(testFile, StorageData.class);
+        long lastKey = 0;
 
         for(int i=0; i<10; i++) {
-            Foo foo = new Foo();
+            StorageData storageData = new StorageData();
             byte[] data = String.format("content_%d", i).getBytes();
-            foo.setData(data);
+            storageData.setData(data);
 
-            lastIndex = fileStorage.append(foo);
+            lastKey = fileStorage.append(storageData);
         }
 
-        Foo foo = fileStorage.getObject(lastIndex);
+        StorageData storageData = fileStorage.getObject(lastKey);
 
-        Assert.assertFalse(foo.isDelete());
+        Assert.assertFalse(storageData.isDelete());
     }
 }

@@ -1,5 +1,7 @@
 package cn.zhanyongzhi.draftbox.pratice;
 
+import cn.zhanyongzhi.draftbox.pratice.exception.CanNotWriteMoreObjectException;
+import cn.zhanyongzhi.draftbox.pratice.exception.FileRemainSizeLessThanZeroException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -31,25 +33,25 @@ public class FileStorageIteratorTest {
 
     @SuppressWarnings({"Duplicates", "unchecked"})
     @Test(dataProvider = "seq_read_num")
-    public void testSeqRead(int count) throws IOException {
-        FileStorage<Foo> fileStorage = new FileStorage(testFile, Foo.class);
+    public void testSeqRead(int count) throws IOException, FileRemainSizeLessThanZeroException, CanNotWriteMoreObjectException {
+        FileStorage<StorageData> fileStorage = new FileStorage(testFile, StorageData.class);
 
         for(int i=0; i<count; i++) {
-            Foo foo = new Foo();
+            StorageData storageData = new StorageData();
             byte[] data = String.format("content_%d", i).getBytes();
-            foo.setData(data);
+            storageData.setData(data);
 
-            fileStorage.append(foo);
+            fileStorage.append(storageData);
         }
 
-        Iterator<Foo> iterator = fileStorage.getIterator();
+        Iterator<StorageData> iterator = fileStorage.getIterator();
         int index = 0;
         while(iterator.hasNext()){
-            Foo foo = iterator.next();
+            StorageData storageData = iterator.next();
             byte[] expectData = String.format("content_%d", index).getBytes();
             index++;
 
-            Assert.assertEquals(expectData, foo.getData());
+            Assert.assertEquals(expectData, storageData.getData());
         }
 
         Assert.assertEquals(count, index);

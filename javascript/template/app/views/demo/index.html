@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+    <script src="../../libs/require.js"></script>
+    <script src="../../config.js"></script>
+</head>
+
+<script>
+    require(['jquery', 'base64'], function ($, base64) {
+        document.write(base64.encoder("12345"));
+    });
+</script>
+<body>
+
+</body>
+</html>

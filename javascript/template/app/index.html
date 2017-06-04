@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="libs/require.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+
+<script>
+    require(['jquery', 'com/atomview/demo/demo'], function ($, demo) {
+        var demoList = demo.getDemoList();
+        console.log(demoList);
+        $.each(demoList, function(item){
+            var obj = demoList[item];
+            $("body").append('<a id="demoPage" href="' + obj.path + '" target="_blank">' + obj.name + '</a></br>');
+        });
+    });
+</script>
+</body>
+</html>

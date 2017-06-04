@@ -1,8 +1,11 @@
 package cn.zhanyongzhi.draftbox.pratice;
 
+import cn.zhanyongzhi.draftbox.pratice.exception.CanNotWriteMoreObjectException;
+import cn.zhanyongzhi.draftbox.pratice.exception.FileRemainSizeLessThanZeroException;
 import cn.zhanyongzhi.draftbox.pratice.utils.Functions;
 import com.sun.media.sound.InvalidDataException;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.nio.channels.Channels;
@@ -10,6 +13,8 @@ import java.util.Arrays;
 import java.util.zip.CRC32;
 
 class ObjectFileStream<T> implements IObjectFileStream {
+    private static Logger logger = Logger.getLogger(ObjectFileStream.class);
+
     private static final byte[] MAGIC_NUM = "GMFS".getBytes();
     private static final int PACK_SIZE = 8;
 
@@ -17,18 +22,27 @@ class ObjectFileStream<T> implements IObjectFileStream {
     private FileOutputStream out;
     private RandomAccessFile randomAccessFile;
 
-    private long curIndex = 0;
+    private long curReadIndex = 0;
+    private long curWriteIndex = 0;
+
+    private long remainFileSize;
 
     private Class<T> clazz;
 
-    ObjectFileStream(File file, Class<T> objClass) throws FileNotFoundException {
+    ObjectFileStream(File file, Class<T> objClass, long maxFileSize) throws FileNotFoundException, FileRemainSizeLessThanZeroException {
         in = new FileInputStream(file);
         out = new FileOutputStream(file, true);
 
         randomAccessFile = new RandomAccessFile(file, "rw");
 
         long fileSize = file.length();
-        curIndex = getCurrentIndex(fileSize);
+        curWriteIndex = getCurrentIndex(fileSize);
+
+        remainFileSize = maxFileSize - fileSize;
+        if(0 > remainFileSize){
+            logger.error("file remain size less than zero");
+            throw new FileRemainSizeLessThanZeroException();
+        }
 
         clazz = objClass;
     }
@@ -63,6 +77,12 @@ class ObjectFileStream<T> implements IObjectFileStream {
 
         ISerialize serialize = (ISerialize) clazz.newInstance();
 
+        byte[] keyByte = new byte[8];
+        IOUtils.readFully(in, keyByte);
+
+        long key = Functions.byteArrayToLong(keyByte);
+        serialize.setKey(key);
+
         byte[] flag = new byte[1];
         IOUtils.readFully(in, flag);
 
@@ -92,19 +112,31 @@ class ObjectFileStream<T> implements IObjectFileStream {
             throw new InvalidDataException();
 
         //1 is flag mark
-        int appendSize = MAGIC_NUM.length + 1 + dataLenBytes.length + dataLen + checkSumByte.length;
+        int appendSize = MAGIC_NUM.length + keyByte.length + 1 + dataLenBytes.length + dataLen + checkSumByte.length;
         int packSize = getPackSize(appendSize);
         if(0 != packSize) {
             //noinspection ResultOfMethodCallIgnored
             in.skip(packSize);
         }
 
+        int objIndex = (int)curReadIndex;
+        serialize.setIndex(objIndex);
+
+        //inc the read index
+        curReadIndex += appendSize / PACK_SIZE;
+
         return serialize.getObject();
     }
 
     @Override
-    public int writeObject(ISerialize object) throws IOException {
+    public int writeObject(ISerialize object) throws IOException, CanNotWriteMoreObjectException {
         IOUtils.write(MAGIC_NUM, out);
+
+        //写入key
+        long key = object.getKey();
+
+        byte[] keyBytes = Functions.longToByteArray(key);
+        IOUtils.write(keyBytes, out);
 
         //写入flag
         IOUtils.write(new byte[]{ISerialize.FLAG_NORMAL}, out);
@@ -119,7 +151,7 @@ class ObjectFileStream<T> implements IObjectFileStream {
 
         //写入内容
         if(0 != objSize) {
-            data = object.writeObject(out, (int) curIndex);
+            data = object.writeObject(out, (int) curWriteIndex);
         }else{
             data = new byte[0];
         }
@@ -132,7 +164,7 @@ class ObjectFileStream<T> implements IObjectFileStream {
         out.write(crc32Byte);
 
         //write pack size, 1 == flag size
-        int appendSize = MAGIC_NUM.length + 1 + objSizeByte.length + objSize + crc32Byte.length;
+        int appendSize = MAGIC_NUM.length + keyBytes.length + 1 + objSizeByte.length + objSize + crc32Byte.length;
         int packSize = getPackSize(appendSize);
 
         if(0 != packSize) {
@@ -141,11 +173,16 @@ class ObjectFileStream<T> implements IObjectFileStream {
         }
 
         int writedSize = appendSize + packSize;
+        long curRemainFileSize = remainFileSize - writedSize;
+        if(curRemainFileSize < 0)
+            throw new CanNotWriteMoreObjectException();
 
-        int objIndex = (int) curIndex;
+        remainFileSize = curRemainFileSize;
+
+        int objIndex = (int) curWriteIndex;
 
         //更新索引,对齐之后,最少有一个了
-        curIndex += writedSize / PACK_SIZE;
+        curWriteIndex += writedSize / PACK_SIZE;
 
         out.flush();
 
@@ -159,7 +196,8 @@ class ObjectFileStream<T> implements IObjectFileStream {
 
     @Override
     public void deleteObject(int index) throws IOException {
-        long offset = getOffset(index) + MAGIC_NUM.length;
+        //magic num + block id length
+        long offset = getOffset(index) + MAGIC_NUM.length + 8;
         randomAccessFile.seek(offset);
 
         //将文件长度，设置为-1，表示删除

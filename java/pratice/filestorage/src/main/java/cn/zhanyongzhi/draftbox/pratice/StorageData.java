@@ -9,6 +9,8 @@ import java.io.OutputStream;
 public class StorageData implements ISerialize {
     private byte[] data;
     private byte flag;
+    private Long key;
+    private Integer index;
 
     public void setData(byte[] data){
         this.data = data;
@@ -20,6 +22,29 @@ public class StorageData implements ISerialize {
 
     public boolean isDelete(){
         return FLAG_DELETE == flag;
+    }
+
+    @Override
+    public void setIndex(Integer index){
+        this.index = index;
+    }
+
+    @Override
+    public Integer getIndex() {
+        return index;
+    }
+
+    @Override
+    public long getKey() {
+        if(null == key)
+            key = KeyGenerate.getInstance().nextId();
+
+        return key;
+    }
+
+    @Override
+    public void setKey(long key) {
+        this.key = key;
     }
 
     @Override

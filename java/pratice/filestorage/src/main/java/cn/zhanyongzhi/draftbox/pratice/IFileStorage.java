@@ -1,16 +1,19 @@
 package cn.zhanyongzhi.draftbox.pratice;
 
+import cn.zhanyongzhi.draftbox.pratice.exception.CanNotWriteMoreObjectException;
+import cn.zhanyongzhi.draftbox.pratice.exception.FileRemainSizeLessThanZeroException;
+
 import java.io.IOException;
 import java.util.Iterator;
 
 interface IFileStorage<T> {
-    Iterator getIterator() throws IOException;
+    Iterator getIterator() throws IOException, FileRemainSizeLessThanZeroException;
 
-    int append(T object) throws IOException;
+    long append(T object) throws IOException, CanNotWriteMoreObjectException;
 
-    void delete(int index) throws IOException;
+    void delete(long key) throws IOException;
 
-    T getObject(int index) throws IOException, InstantiationException, IllegalAccessException;
+    T getObject(long key) throws IOException, InstantiationException, IllegalAccessException;
 
     void flush() throws IOException;
 

@@ -1,17 +1,24 @@
 package cn.zhanyongzhi.draftbox.pratice;
 
+import cn.zhanyongzhi.draftbox.pratice.exception.CanNotWriteMoreObjectException;
+import cn.zhanyongzhi.draftbox.pratice.exception.FileRemainSizeLessThanZeroException;
 import cn.zhanyongzhi.draftbox.pratice.utils.Config;
+import cn.zhanyongzhi.draftbox.pratice.utils.Functions;
 import org.apache.log4j.Logger;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.security.Key;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
     private static Logger logger = Logger.getLogger(FileStorage.class);
 
     private static final String COMPACT_FILE_SUFFIX = "_compacting";
+    private static final long MAX_FILE_SIZE = Functions.Size1G * 64;
 
     private IObjectFileStream objectFileStream;
     private File curFile;
@@ -20,16 +27,18 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
     private boolean isCompacting;
     private boolean isReadOnly;
 
+    private Map<Long, Integer> blockIdMap = new HashMap<>();
+
     private Config config = Config.getInstance();
 
-    FileStorage(File file, Class<T> clazz) throws IOException {
+    FileStorage(File file, Class<T> clazz) throws IOException, FileRemainSizeLessThanZeroException {
         this.curFile = file;
         this.clazz = clazz;
 
         init();
     }
 
-    private void init() throws IOException {
+    private void init() throws IOException, FileRemainSizeLessThanZeroException {
         isReadOnly = config.getValue(Config.IS_READ_ONLY_KEY, Config.IS_READ_ONLY_VAL);
 
         //check compact file
@@ -52,22 +61,40 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
             curFile.createNewFile();
         }
 
-        objectFileStream = new ObjectFileStream<>(curFile, clazz);
+        objectFileStream = new ObjectFileStream<>(curFile, clazz, MAX_FILE_SIZE);
+    }
+
+    private void initBlockMap() throws IOException, FileRemainSizeLessThanZeroException {
+        blockIdMap.clear();
+
+        Iterator<T> iterator = getIterator();
+        while(iterator.hasNext()){
+            T obj = iterator.next();
+            Long key = obj.getKey();
+            Integer index = obj.getIndex();
+
+            blockIdMap.put(key, index);
+        }
     }
 
     @Override
-    public Iterator<T> getIterator() throws IOException {
+    public Iterator<T> getIterator() throws IOException, FileRemainSizeLessThanZeroException {
         updateCurFile();
 
         @SuppressWarnings("unchecked")
-        IObjectFileStream<T> stream = new ObjectFileStream<>(curFile, clazz);
+        IObjectFileStream<T> stream = new ObjectFileStream<>(curFile, clazz, MAX_FILE_SIZE);
         return new FileStorageIterator<>(stream);
     }
 
     @Override
-    public int append(T object) throws IOException {
+    public long append(T object) throws IOException, CanNotWriteMoreObjectException {
         try {
-            return getObjectFileStream().writeObject(object);
+            int index = getObjectFileStream().writeObject(object);
+            long key = object.getKey();
+
+            blockIdMap.put(key, index);
+
+            return key;
         }catch (IOException e){
             logger.error("append faild.", e);
             markReadOnly();
@@ -77,11 +104,15 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
     }
 
     @Override
-    public void delete(int index) throws IOException {
+    public void delete(long key) throws IOException {
         try {
+            Integer index = blockIdMap.get(key);
+            if(null == index)
+                return;
+
             getObjectFileStream().deleteObject(index);
         }catch (IOException e){
-            logger.error(String.format("delete index %d failed", index), e);
+            logger.error(String.format("delete key %d failed", key), e);
             markReadOnly();
 
             throw e;
@@ -89,12 +120,16 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
     }
 
     @Override
-    public T getObject(int index) throws IOException, InstantiationException, IllegalAccessException {
+    public T getObject(long key) throws IOException, InstantiationException, IllegalAccessException {
         try {
+            Integer index = blockIdMap.get(key);
+            if(null == index)
+                return null;
+
             //noinspection unchecked
             return (T) getObjectFileStream().readObject(index);
         }catch (Exception e){
-            logger.error(String.format("get object %d failed", index), e);
+            logger.error(String.format("get object %d failed", key), e);
             markReadOnly();
 
             throw e;
@@ -136,7 +171,7 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
                     String compactFilePath = curFile.getPath() + COMPACT_FILE_SUFFIX;
                     File newFile = new File(compactFilePath);
 
-                    compactor = new Compactor(self, newFile, clazz);
+                    compactor = new Compactor(self, newFile, clazz, MAX_FILE_SIZE);
                     compactFile = compactor.doCompact();
                 } catch (IOException e) {
                     logger.error("compact failed.", e);
@@ -181,7 +216,7 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void updateCurFile() throws IOException {
+    private void updateCurFile() throws IOException{
         if(isCompacting())
             return;
 
@@ -196,6 +231,11 @@ class FileStorage<T extends ISerialize> implements IFileStorage<T>, Closeable{
         compactFile.renameTo(curFile);
         compactFile = null;
 
-        objectFileStream = new ObjectFileStream<>(curFile, clazz);
+        try {
+            objectFileStream = new ObjectFileStream<>(curFile, clazz, MAX_FILE_SIZE);
+            //重新初始化块映射
+            initBlockMap();
+        } catch (FileRemainSizeLessThanZeroException ignore) {
+        }
     }
 }

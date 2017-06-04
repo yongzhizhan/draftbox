@@ -8,10 +8,12 @@ public class Compactor<T extends ISerialize> implements ICompactor {
     private IFileStorage fileStorage;
     private File newFile;
     private Class clazz;
+    private long maxFileSize;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    Compactor(IFileStorage fileStorage, File newFile, Class clazz) throws IOException {
+    Compactor(IFileStorage fileStorage, File newFile, Class clazz, long maxFileSize) throws IOException {
         this.fileStorage = fileStorage;
+        this.maxFileSize = maxFileSize;
 
         if(newFile.exists())
            newFile.delete();
@@ -22,7 +24,7 @@ public class Compactor<T extends ISerialize> implements ICompactor {
 
     @SuppressWarnings("unchecked")
     public File doCompact() throws IOException{
-        try(IObjectFileStream objectFileStream = new ObjectFileStream<>(newFile, clazz)){
+        try(IObjectFileStream objectFileStream = new ObjectFileStream<>(newFile, clazz, maxFileSize)){
             Iterator<T> iterator = fileStorage.getIterator();
             while(iterator.hasNext()){
                 T obj = iterator.next();

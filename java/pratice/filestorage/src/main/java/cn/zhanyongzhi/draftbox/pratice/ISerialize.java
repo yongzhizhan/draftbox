@@ -8,6 +8,14 @@ interface ISerialize<T> {
     byte FLAG_NORMAL = 0x0;
     byte FLAG_DELETE = 0x1;
 
+    Integer getIndex();
+
+    void setIndex(Integer index);
+
+    long getKey();
+
+    void setKey(long key);
+
     void setFlag(byte flag);
 
     byte getFlag();
@@ -19,4 +27,5 @@ interface ISerialize<T> {
     byte[] readObject(InputStream in, int dataLen) throws IOException;
 
     ISerialize<T> getObject();
+
 }
