@@ -16,6 +16,7 @@
         <module>dubbointerface</module>
         <module>filestorage</module>
         <module>study-testng</module>
+        <module>zk</module>
     </modules>
 
     <properties>
@@ -136,11 +137,11 @@
             <version>2.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--<artifactId>guava</artifactId>-->
+            <!--<version>21.0</version>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
