@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bootstrap ajax分页学习</title>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
+    <!-- Latest compiled and minified Locales -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+
+
+</head>
+<script>
+    $(function(){
+        $('#gravidaTable').bootstrapTable({
+            contentType: "application/x-www-form-urlencoded",
+            method: 'post',
+            dataType: "json",
+            url: "data/page-data.json",
+            striped: true,
+            pagination: true,
+            singleSelect: false,
+            clickToSelect:true,
+            showColumns: false,
+            search: false,
+            silent: true,
+            pageSize: 10,
+            pageNumber:1,
+            sidePagination: "server",
+            queryParamsType:"limit",
+            pageList:[10, 25, 50, 100],
+            queryParams: gravidaTableParams,
+            onDblClickRow:onDblClickRow
+        });
+
+        function onDblClickRow(row)
+        {
+            $('#myModal').modal('show')
+
+        }
+
+        //表格查询条件
+        function gravidaTableParams(params) {
+            return {
+                pageSize: params.limit,
+                pageNumber: params.pageNumber
+            };
+        }
+    });
+
+    function infectionColumn(data) {
+        return "abc" + data;
+    }
+
+</script>
+<body>
+<table id="gravidaTable">
+    <thead>
+    <tr>
+        <th data-field="id" data-checkbox="true">ID</th>
+        <th data-field="name">姓名</th>
+        <th data-field="phoneNo">手机号</th>
+        <th data-field="dueDate">预产期</th>
+        <th data-field="assess" data-formatter="assessColumn">风险等级</th>
+        <th data-field="infection" data-formatter="infectionColumn">有无传染病</th>
+    </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body">在这里添加一些文本</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>

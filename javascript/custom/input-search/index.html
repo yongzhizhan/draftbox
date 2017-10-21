@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Search学习</title>
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="input-search-pack.js"></script>
+</head>
+
+<style>
+    .input-search-box {
+        margin: 100px;
+        width: 100px;
+    }
+
+    .input-search-box input{
+        width: 100%;
+    }
+
+    .input-search-box ul{
+        display: none;
+        list-style: none;
+        padding: 5px 0px;
+
+        background-color: #fff;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    }
+
+    .input-search-box ul li{
+        display: block;
+        height: 25px;
+        line-height: 25px;
+        color:black;
+    }
+
+    .input-search-box ul li:hover{
+        background-color: cornflowerblue;
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .input-search-box ul li a{
+        padding: 3px 5px;
+        text-decoration: none;
+    }
+
+</style>
+
+<body>
+<div class="input-search-box" id="input-search-box">
+    <input value=""/>
+    <ul>
+    </ul>
+</div>
+</body>
+</body>
+</html>

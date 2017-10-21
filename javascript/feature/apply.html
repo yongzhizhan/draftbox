@@ -1,0 +1,31 @@
+
+<script>
+
+    var TestFunc2 = function(){
+    };
+
+    var testFunc2 = new TestFunc2;
+
+    TestFunc2.prototype.foo = function (bar) {
+        console.log(this);
+        bar();
+    };
+
+    var TestFunc = function() {
+    };
+    var testFunc = new TestFunc;
+
+    TestFunc.prototype.bar = function(){
+        console.log(this);
+    };
+
+    TestFunc.prototype.xxxx = function(){
+        console.log(this);
+        const self = this;
+        testFunc2.foo(this.bar.bind(this));
+    };
+
+    testFunc.xxxx();
+
+
+</script>
