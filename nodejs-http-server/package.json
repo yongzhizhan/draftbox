@@ -1,0 +1,7 @@
+{
+  "name": "nodejs-http-server",
+  "version": "0.0.1",
+  "dependencies": {
+    "sqlite3": "^3.1.13"
+  }
+}
