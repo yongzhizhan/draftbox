@@ -31,6 +31,8 @@ public class MysqlDocker {
     FileOutputStream outputStream;
 
     private String containerName = "7a919192-7faa-4159-b2bf-6c8d17d5524b";
+    private String imageName = "123.56.168.19:5000/yueyuso-mainserverdb";
+    private String rootPwd = "12345";
     private DockerClient docker;
     private int port = 53306;
 
@@ -38,7 +40,8 @@ public class MysqlDocker {
         //
     }
 
-    public MysqlDocker(String containerName, int port) {
+    public MysqlDocker(String imageName, String containerName, int port) {
+        this.imageName = imageName;
         this.containerName = containerName;
         this.port = port;
     }
@@ -76,10 +79,10 @@ public class MysqlDocker {
             Ports portBindings = new Ports();
             portBindings.bind(ExposedPort.tcp(3306), Ports.Binding.bindPort(port));
 
-            CreateContainerResponse container = docker.createContainerCmd("123.56.168.19:5000/yueyuso-mainserverdb")
+            CreateContainerResponse container = docker.createContainerCmd(imageName)
                     .withName(containerName)
                     .withPortBindings(portBindings)
-                    .withEnv("MYSQL_ROOT_PASSWORD=12345")
+                    .withEnv("MYSQL_ROOT_PASSWORD=" + rootPwd)
                     .exec();
         }
 
@@ -118,7 +121,7 @@ public class MysqlDocker {
         for (int i = 0; i < 10; i++) {
             try {
                 Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url, "root", "12345");
+                Connection conn = DriverManager.getConnection(url, "root", rootPwd);
 
                 Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 String sql = "show databases";
